@@ -53,7 +53,7 @@ class Main extends React.Component{
 
 
     this.fetch_history = e => {
-        axios.post(`/fetch_history`, {
+        axios.get(`/fetch_history`, {
           key: this.props.match.params.id,
         }).then(res => {
             this.setState(
