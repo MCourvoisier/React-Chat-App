@@ -24,7 +24,7 @@ export class Login extends React.Component {
   }
 
   handleSubmit(event) {
-    axios.post('/login_request', {
+    axios.get('/login_request', {
       email: this.state.email,
       password: this.state.password,
     }).then(res => {
