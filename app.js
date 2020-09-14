@@ -7,15 +7,16 @@ const bodyParser = require('body-parser')
 const {Pool} = require('pg');
 const http = require("http");
 const socket = require("socket.io");
+const config = require("config.js");
 
 //todo: Add a config file
 const pool = new Pool({
-  user: ,
-  host: ,
-  database: ,
-  password: ,
-  port: ,
-  ssl:
+  user: config.db_username,
+  host: config.db_host,
+  database: config.db_database,
+  password: config.db_password,
+  port: config.db_port,
+  ssl: config.db_ssl_settings
 })
 
 /*const pool = new Pool({
@@ -56,7 +57,9 @@ app.get('*', function(_, res) {
 
 
 //Add error handlers to all of these.
-app.post('/login_request', async function(req, res) {
+//******* Add RESTful return codes to these *******
+
+app.get('/login_request', async function(req, res) {
   //Checks database for whether account exists and return true/false
   const query = await pool.query("select true from login where email = $1 and password = $2", [req.body.email, req.body.password]);
   if(await query.rows.length == 1)
@@ -65,14 +68,14 @@ app.post('/login_request', async function(req, res) {
 
 });
 
-app.post('/get_rooms', async function(req, res) {
+app.get('/get_rooms', async function(req, res) {
   const query = await pool.query("select room_id from room_auth where email = $1", [req.body.key])
   console.log(query.rows);
   return await res.send(query.rows);
 
 });
 
-app.post('/delete_room', async function(req, res) {
+app.delete('/delete_room', async function(req, res) {
   await pool.query("delete from room_auth where email = $1 and room_id = $2", [req.body.email, req.body.key]);
 });
 
@@ -85,16 +88,16 @@ app.post('/send_history', async function(req, res) {
   return await true;
 });
 
-app.post('/fetch_history', async function(req, res) {
+app.get('/fetch_history', async function(req, res) {
   const query = await pool.query("select * from history where room_id = $1 order by message_id asc", [req.body.key]);
   return await res.send(query.rows);
 });
 
-app.post('/signup_request', async function(req, res) {
+app.get('/signup_request', async function(req, res) {
   const check_email = await pool.query("select exists(select 1 from login where email = $1)", [req.body.email])
   if(await check_email.rows[0].exists == true) 
     return res.send(false)
-  const query = await pool.query("insert into login (email, password) values ($1, $2)", [req.body.email, req.body.password]);
+  const query = 
   return await res.send(true);
 });
 
