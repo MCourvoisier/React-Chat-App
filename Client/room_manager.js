@@ -20,7 +20,7 @@ export class RoomManager extends React.Component {
   }
 
   handleSubmit(event) {
-    axios.post(`/get_rooms`, {
+    axios.get(`/get_rooms`, {
       key: Cookies.get("email"),
     }).then(res => {
         this.setState(
